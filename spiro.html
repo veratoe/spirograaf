@@ -1,0 +1,124 @@
+<!-- DOCTYPE html -->
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.js"></script>
+        
+        <style>
+            html, body {
+                height: 100%;
+                font-family: monospace;
+            }
+
+            body {
+                margin: 0;
+                display: flex;
+
+                /* This centers our sketch horizontally. */
+                justify-content: center;
+
+                /* This centers our sketch vertically. */
+                align-items: center;
+            }
+
+            #controls  {
+                position: fixed;
+                top: 0;
+                padding: 20px;
+                border-radius: 4px;
+                border: 1px solid #eee;
+                margin: 20px;
+                
+            }
+
+            label {
+                padding: 4px;
+                margin: 4px;
+                vertical-align: top;
+            }
+
+            .slider {
+                margin: 4px
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div id="controls">
+                <div class="slider"><label for="">R1</label><input type="range" min=0 max=1 step=0.01 v-model="r1"><br/></div>
+                <div class="slider"><label for="">R2</label><input type="range"  min=0 max=1 step=0.01 v-model="r2"><br/> 
+                <div class="slider"><label for="">step1</label><input type="range" min=0 max=4 step=0.01 v-model="step1"><br/></div> 
+                <div class="slider"><label for="">step2</label><input type="range" min=0 max=4 step=0.01 v-model="step2"><br/></div> 
+            </div>
+        </div>
+
+    </body>
+    <script>
+
+
+        var scale_factor = 0.4
+
+        function _translateY(y) {
+            return windowHeight / 2 * (y * scale_factor + 1);
+        }
+
+        function _translateX(x) {
+            return windowHeight / 2 * x  * scale_factor + windowWidth / 2;
+        }
+
+        function draw_spirograph() {
+
+            clear()
+
+            var last_x, last_y
+            
+            for (var i = 0; i < 2000; i++) {
+
+                x = cos( radians(i * vue.step1 ) ) * vue.r1 - sin( radians(i * vue.step2 ) ) * vue.r2;
+                y = sin( radians(i * vue.step1 ) ) * vue.r1 + cos( radians(i * vue.step2 ) ) * vue.r2;
+
+                if (!last_x) last_x = x
+                if (!last_y) last_y = y
+                
+                line(_translateX(x),_translateY(y), _translateX(last_x), _translateY(last_y))
+
+                last_x = x;
+                last_y = y;
+            }
+
+        }
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight)
+
+            draw_spirograph()
+
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
+        function draw() {
+            
+        }
+
+        
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                r1: 1,
+                r2: 0.3,
+                step1: 5,
+                step2: 5
+            }, 
+            watch: {
+                r1: draw_spirograph,
+                r2: draw_spirograph,
+                step1: draw_spirograph,
+                step2: draw_spirograph
+            }
+        })
+        
+    </script>
+</html>
