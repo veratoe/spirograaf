@@ -51,6 +51,10 @@
             .slider {
                 margin: 4px
             }
+		
+	    .slider input[type=checkbox] {
+		    float: right;
+	    }
         
 	</style>
     
@@ -61,11 +65,12 @@
         
 		<div id="app"><div id="controls">
 			<div class="slider"><label for="">max_lines </label> 
-				<input v-model="max_lines" type="range" min="0" max="2500"> 700
+				<input v-model="max_lines" type="range" min="0" max="2500"> {{ max_lines }}
 			</div> 
-			<div class="slider"><label for="">muis power </label> <input v-model="mouse_strength" type="range" min="0" max="50"> 28
-				</div> <div class="slider"><label for="">line_count </label> 701
+			<div class="slider"><label for="">muis power </label> <input v-model="mouse_strength" type="range" min="0" max="50"> {{ mouse_strength }}
+				</div> <div class="slider"><label for="">line_count </label> {{ line_count }}
 				</div> 
+			<br/><br/>
 			<div class="slider"><label for="">wrijving </label> <input v-model="damping" type="checkbox"></div> 
 			<div class="slider"><label for="">Alleen als muis beweegt</label> <input v-model="on_mouse_move_only" type="checkbox"></div> 
 			<div class="slider"><label for="">punten tekenen</label> <input v-model="draw_points" type="checkbox"></div> 
