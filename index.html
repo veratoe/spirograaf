@@ -59,10 +59,17 @@
 	<body>
 
         
-		<div id="app"><div id="controls"><div class="slider"><label for="">max_lines </label> <input type="range" min="0" max="2500"> 700
-				</div> <div class="slider"><label for="">muis power </label> <input type="range" min="0" max="50"> 28
+		<div id="app"><div id="controls">
+			<div class="slider"><label for="">max_lines </label> 
+				<input v-model="max_lines" type="range" min="0" max="2500"> 700
+			</div> 
+			<div class="slider"><label for="">muis power </label> <input v-model="mouse_strength" type="range" min="0" max="50"> 28
 				</div> <div class="slider"><label for="">line_count </label> 701
-				</div> <div class="slider"><label for="">wrijving </label> <input type="checkbox"></div> <div class="slider"><label for="">Alleen als muis beweegt</label> <input type="checkbox"></div> <div class="slider"><label for="">punten tekenen</label> <input type="checkbox"></div> <div class="slider"><label for="">Chaos in beweging</label> <input type="checkbox"></div></div></div>
+				</div> 
+			<div class="slider"><label for="">wrijving </label> <input v-model="damping" type="checkbox"></div> 
+			<div class="slider"><label for="">Alleen als muis beweegt</label> <input v-model="on_mouse_move_only" type="checkbox"></div> 
+			<div class="slider"><label for="">punten tekenen</label> <input v-model="draw_points" type="checkbox"></div> 
+			<div class="slider"><label for="">Chaos in beweging</label> <input v-model="chaos" type="checkbox"></div></div></div>
 		<canvas id="defaultCanvas0" class="p5Canvas"> </canvas>
 	
 	<script>
