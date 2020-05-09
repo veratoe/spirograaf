@@ -1,5 +1,8 @@
 <html>
   <head>
+    <script>
+      alert("Ting")
+      </script>
   </head>
   <body>
     <h2>KLJFLSKDJF</h2>
