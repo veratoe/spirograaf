@@ -1,3 +1,7 @@
+---
+permalink: /rode_puntjes
+---
+
 <!DOCTYPE html>
 <html>
 	<head>
