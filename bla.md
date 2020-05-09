@@ -1,7 +1,53 @@
-<script src="test.js" />
-<h2>LE test</h2>
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="UTF-8">
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.js"> </script>
+        <style>
+            html, body {
+                height: 100%;
+                font-family: monospace;
+            }
 
-<body>
+            body {
+                margin: 0;
+                display: flex;
+
+                /* This centers our sketch horizontally. */
+                justify-content: center;
+
+                /* This centers our sketch vertically. */
+                align-items: center;
+            }
+
+            #controls  {
+	        background-color: rgba(0, 0, 0, 0.5);
+                position: fixed;
+                top: 0;
+                padding: 20px;
+                border-radius: 4px;
+                border: 1px solid #eee;
+                margin: 20px;
+                
+            }
+
+            label {
+                padding: 4px;
+                margin: 4px;
+                vertical-align: top;
+            }
+
+            .slider {
+                margin: 4px
+            }
+        
+	</style>
+    
+	
+</head>
+	<body>
+
         
 		<div id="app"><div id="controls"><div class="slider"><label for="">max_lines </label> <input type="range" min="0" max="2500"> 700
 				</div> <div class="slider"><label for="">muis power </label> <input type="range" min="0" max="50"> 28
