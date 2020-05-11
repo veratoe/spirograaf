@@ -1,4 +1,4 @@
-var scale_factor = 0.4;
+var scale_factor = 0.6;
 var vue;
 
 var canvas_width = 800
@@ -23,10 +23,23 @@ function draw_spirograph() {
 
     var last_x, last_y
 
-    for (var i = 0; i < vue.steps; i++) {
+    for (var i = 1; i < vue.steps; i++) {
 
-        x = cos( radians(i * vue.step_size * (vue.r1 - vue.r2) )) * vue.r1 + cos (radians(i * vue.step_size * (1 - vue.r2 / vue.r1))) * vue.r2;
-        y = sin( radians(i * vue.step_size * (vue.r1 - vue.r2) )) * vue.r1 + sin (radians(i * vue.step_size * (1 - vue.r2 / vue.r1))) * vue.r2;
+        var r1 = Number(vue.r1)
+        var r2 = Number(vue.r2)
+        var step_size = Number(vue.step_size)
+
+        i += ((Math.random() - 0.5) / 200)
+        //r2 -= ((Math.random() - 0.5) / 200)
+
+        console.log(r1, r2)
+
+        x = cos( i * step_size * (r1 - r2) ) * r1 + cos (i * step_size * (1 + r2 / r1)) * r2;
+        y = sin( i * step_size * (r1 - r2) ) * r1 + sin (i * step_size * (1 + r2 / r1)) * r2;
+
+
+        // x += (random(100) - 50 ) / 1000
+        // y += (random(100) - 50 ) / 1000
 
         if (!last_x) last_x = x
         if (!last_y) last_y = y
@@ -59,7 +72,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         data: {
             r1: 1,
             r2: 0.3,
-            steps: 1000
+            steps: 1000,
+            step_size: 1
         }, 
         watch: {
             r1: draw_spirograph,

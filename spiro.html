@@ -27,6 +27,7 @@
             #controls  {
                 position: fixed;
                 top: 0;
+                left: 0;
                 padding: 20px;
                 border-radius: 4px;
                 border: 1px solid #eee;
@@ -48,10 +49,10 @@
     <body>
         <div id="app">
             <div id="controls">
-                <div class="slider"><label for="">r1</label><input type="range" min=0 max=1 step=0.01 v-model="r1"><br/></div>
-                <div class="slider"><label for="">r2</label><input type="range"  min=0 max=1 step=0.01 v-model="r2"><br/></div>
-                <div class="slider"><label for="">steps</label><input type="range" min=0 max=4000 v-model="steps"><br/></div> 
-                <div class="slider"><label for="">step_size</label><input type="range" min=0 max=4000 v-model="step_size"><br/></div> 
+                <div class="slider"><label for="">r1</label><input type="range" min=0 max=1 step=0.01 v-model="r1"> {{ r1 }} <br/></div>
+                <div class="slider"><label for="">r2</label><input type="range"  min=0 max=1 step=0.01 v-model="r2">{{ r2 }}<br/></div>
+                <div class="slider"><label for="">steps</label><input type="range" min=0 max=4000 v-model="steps">{{ steps }}<br/></div> 
+                <div class="slider"><label for="">step_size</label><input type="range" min=0 max=200 step=0.01 v-model="step_size">{{ step_size }}<br/></div> 
                 
                 <button v-on:click="save_svg">SVG BAKKEN</button>
             </div>
