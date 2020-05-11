@@ -1,30 +1,32 @@
 var scale_factor = 0.4;
 var vue;
 
+var canvas_width = 800
+var canvas_height = 800
+
 function _translateY(y) {
-  return windowHeight / 2 * (y * scale_factor + 1);
+  return canvas_height / 2 * (y * scale_factor + 1);
 }
 
 function _translateX(x) {
-  return windowHeight / 2 * x  * scale_factor + windowWidth / 2;
+  return canvas_height / 2 * x  * scale_factor + canvas_width / 2;
 }
 
 function draw_spirograph() {
   
+    clear()
     if (typeof vue === "undefined")
         return
 
-    strokeWeight(1)
+    strokeWeight(0.2)
     stroke(0, 0, 0)
-
-    rect(0, 0, windowWidth, windowHeight)
 
     var last_x, last_y
 
-    for (var i = 0; i < 2000; i++) {
+    for (var i = 0; i < vue.steps; i++) {
 
-        x = cos( radians(i * vue.step1 ) ) * vue.r1 - sin( radians(i * vue.step2 ) ) * vue.r2;
-        y = sin( radians(i * vue.step1 ) ) * vue.r1 + cos( radians(i * vue.step2 ) ) * vue.r2;
+        x = cos( radians(i * vue.step_size * (vue.r1 - vue.r2) )) * vue.r1 + cos (radians(i * vue.step_size * (1 - vue.r2 / vue.r1))) * vue.r2;
+        y = sin( radians(i * vue.step_size * (vue.r1 - vue.r2) )) * vue.r1 + sin (radians(i * vue.step_size * (1 - vue.r2 / vue.r1))) * vue.r2;
 
         if (!last_x) last_x = x
         if (!last_y) last_y = y
@@ -38,12 +40,12 @@ function draw_spirograph() {
 }
 
 function setup() {
-    createCanvas(windowWidth, windowHeight, SVG)
+    createCanvas(canvas_width, canvas_height, SVG)
     draw_spirograph()
 }
 
 function windowResized() {
-    //resizeCanvas(windowWidth, windowHeight);
+    //resizeCanvas(canvas_width, canvas_height);
 }
 
 function draw() {
@@ -57,19 +59,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
         data: {
             r1: 1,
             r2: 0.3,
-            step1: 5,
-            step2: 5
+            steps: 1000
         }, 
         watch: {
             r1: draw_spirograph,
-           r2: draw_spirograph,
-           step1: draw_spirograph,
-           step2: draw_spirograph
+            r2: draw_spirograph,
+            steps: draw_spirograph,   
+            step_size: draw_spirograph        
         }, 
         methods: {
             save_svg: () => {
-                save("wub_spiro.svg")
-                alert("Je mooie svg is gebakken")
+                save("wub_spiro.svg")            
             }
         }
     })
