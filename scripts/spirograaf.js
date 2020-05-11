@@ -1,5 +1,5 @@
-var scale_factor = 0.4
-var vue
+var scale_factor = 0.4;
+var vue;
 
 function _translateY(y) {
   return windowHeight / 2 * (y * scale_factor + 1);
@@ -52,25 +52,25 @@ function draw() {
 
 document.addEventListener("DOMContentLoaded", function(event) { 
 
-  vue = new Vue({
-      el: "#app",
-      data: {
-          r1: 1,
-          r2: 0.3,
-          step1: 5,
-          step2: 5
-      }, 
-      watch: {
-          r1: draw_spirograph,
-          r2: draw_spirograph,
-          step1: draw_spirograph,
-          step2: draw_spirograph
-      }, 
-      methods: {
-          save_svg: () => {
-            save("wub_spiro.svg")
-            alert("Je mooie svg is gebakken")
-          }
-      }
-  })
+    vue = new Vue({
+        el: "#app",
+        data: {
+            r1: 1,
+            r2: 0.3,
+            step1: 5,
+            step2: 5
+        }, 
+        watch: {
+            r1: draw_spirograph,
+           r2: draw_spirograph,
+           step1: draw_spirograph,
+           step2: draw_spirograph
+        }, 
+        methods: {
+            save_svg: () => {
+                save("wub_spiro.svg")
+                alert("Je mooie svg is gebakken")
+            }
+        }
+    })
 })
