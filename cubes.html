@@ -1,0 +1,63 @@
+<!-- DOCTYPE html -->
+<html>
+    <head>
+        <meta charset="UTF-8"></meta>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
+    	<script src="scripts/cubes.js"></script>
+        
+        <style>
+            html, body {
+                height: 100%;
+                font-family: monospace;
+            }
+
+            body {
+                margin: 0;
+                display: flex;
+
+                /* This centers our sketch horizontally. */
+                justify-content: center;
+
+                /* This centers our sketch vertically. */
+                align-items: center;
+            }
+
+            #controls  {
+                position: fixed;
+                top: 0;
+                left: 0;
+                padding: 20px;
+                border-radius: 4px;
+                border: 1px solid #eee;
+                margin: 20px;
+                
+            }
+
+            label {
+                padding: 4px;
+                margin: 4px;
+                vertical-align: top;
+            }
+
+            .slider {
+                margin: 4px
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div id="controls">
+                <div class="slider"><label for="">Zoom</label><input type="range" min=0 max=3 step=0.01 v-model="scale_factor">{{ scale_factor }}<br/></div> 
+                <div class="slider"><label for="">r1</label><input type="range" min=0 max=1 step=0.05 v-model="r1"> {{ r1 }} <br/></div>
+                <div class="slider"><label for="">r2</label><input type="range"  min=0 max=1 step=0.05 v-model="r2">{{ r2 }}<br/></div>
+                <div class="slider"><label for="">r3</label><input type="range"  min=0 max=1 step=0.05 v-model="r3">{{ r3 }}<br/></div>
+                <div class="slider"><label for="">steps</label><input type="range" min=0 max=5000 v-model="steps">{{ steps }}<br/></div> 
+                <div class="slider"><label for="">step_size</label><input type="range" min=0 max=5 step=0.25 v-model="step_size">{{ step_size }}<br/></div> 
+                <div class="slider"><label for="">dikte strook</label><input type="range" min=0 max=10 step=0.01 v-model="stroke_weight">{{ stroke_weight }}<br/></div> 
+                
+                <button v-on:click="save_svg">SVG BAKKEN</button>
+            </div>
+        </div>
+    </body>
+</html>
