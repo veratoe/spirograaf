@@ -14,7 +14,7 @@ function draw_spirograph() {
     if (typeof vue === "undefined")
         return
 
-    strokeWeight(0.5)
+    strokeWeight(1)
     stroke(0, 0, 0)
 
     rect(0, 0, windowWidth, windowHeight)
