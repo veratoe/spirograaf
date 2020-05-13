@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
         <meta charset="UTF-8">
@@ -73,7 +74,7 @@
 				<div class="slider"><label for="">noise resolutie </label> <input v-model="noise_step" type="range" min="0" max="50"> {{ noise_step }}</div>
 				<div class="slider"><label for="">fade </label> <input v-model="fade" type="range" min="0" max="255"> {{ fade }} </div>
 				<div class="slider"><label for="">punt dikte </label> <input v-model="radius" type="range" min="0" max="15"> {{ radius }} </div> 
-				<div class="slider"><label for="">max snelheid</label> <input v-model="max_speed" type="range" min="0" max="10"> {{ max_speed }} </div> 
+				<div class="slider"><label for="">max snelheid</label> <input v-model="max_speed" type="range" min="0" max="7"> {{ max_speed }} </div> 
 				<div class="slider"><label for="">tijdstap</label> <input v-model="time_step" type="range" min="0" max="15" step="0.2"> {{ time_step }} </div> 
 				<div class="slider"><label for="">noise seed</label> <input v-model="noise_z" type="range" min="0" max="15"> {{ noise_z }} </div> 
 	
@@ -104,8 +105,8 @@
 					fade: 128,
 					radius: 3,
 					draw_type: "points",
-					max_speed: 3,
-					time_step: 4,
+					max_speed: 1,
+					time_step: 1,
 					noise_z: 0, 	
 					change_noise_z_on_mouse_move: false
 
@@ -130,7 +131,7 @@
 			var noise_z = 0;
 			var step = 30
 
-			var pg, fg
+			var pg, fg,pl
 
 			function setup(){
 
@@ -141,6 +142,7 @@
 
 				createCanvas(w, h)
 
+				pl = createGraphics(w, h)
 				pg = createGraphics(w, h)
 				fg = createGraphics(w, h)
 
@@ -151,6 +153,7 @@
 				}
 
 				drawField()
+				paper()
 
 			}
 
@@ -184,6 +187,18 @@
 				noise_z = cos(mouseX) + sin(mouseY)
 			}
 
+			function paper() {
+				pl.noStroke()
+
+				var step = 2
+				for (var i = 0; i < w; i+= step) {
+					for (var j = 0; j < h; j+= step) {
+						pl.fill(random(150, 255), 25)
+						pl.rect(i, j, step, step)
+					}
+				}
+			}
+
 			function draw(){
 				// drawField()
 				//pg.clear()
@@ -208,7 +223,7 @@
 
 					p.x += p.v.x * vue.time_step 
 					p.y += p.v.y * vue.time_step
-
+					smooth()
 					if (abs(p.x) > w || abs(p.y) > h) {	
 						p.x = random(w);
 						p.y = random(h)
@@ -241,6 +256,7 @@
 				
 				//image(fg, 0, 0)
 				image(pg, 0, 0)
+				image(pl, 0, 0)
 
 			}
 
@@ -248,5 +264,5 @@
 	    </script>
 
 	</body>
-</htlm>
+</html>
 
