@@ -1,0 +1,252 @@
+<html>
+	<head>
+        <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
+        <script src="p5.min.js"> </script>
+        <style>
+            html, body {
+                height: 100%;
+		    	width: 100%;
+		    	overflow: none;
+                font-family: monospace;
+            }
+
+            body {
+                margin: 0;
+            }
+		
+			canvas {
+				top: 0;
+				left: 0;
+				position: absolute
+			}
+			
+			#app {
+				position: fixed;
+				z-index: 5000;
+				top: 0;
+				left: 0;
+			}
+
+            #controls  {
+				
+		    	font-family: monospace;
+	        	background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                top: 0;
+	        	left: 0;
+                padding: 20px;
+                border-radius: 4px;
+                border: 1px solid #eee;
+                margin: 20px;
+                
+            }
+
+            label {
+                padding: 4px;
+                margin: 4px;
+                vertical-align: top;
+				width: 100px;
+            }
+
+            .slider {
+                margin: 4px
+            }
+		
+	    .slider input[type=checkbox] {
+		    float: right;
+	    }
+        
+	</style>
+    
+	
+</head>
+	<body>
+
+        
+		<div id="app">
+			<div id="controls">
+				<div class="slider"><label for="">max_points </label> 
+					<input v-model="max_points" type="range" min="0" max="5000"> {{ max_points }}
+				</div> 
+				<div class="slider"><label for="">noise resolutie </label> <input v-model="noise_step" type="range" min="0" max="50"> {{ noise_step }}</div>
+				<div class="slider"><label for="">fade </label> <input v-model="fade" type="range" min="0" max="255"> {{ fade }} </div>
+				<div class="slider"><label for="">punt dikte </label> <input v-model="radius" type="range" min="0" max="15"> {{ radius }} </div> 
+				<div class="slider"><label for="">max snelheid</label> <input v-model="max_speed" type="range" min="0" max="10"> {{ max_speed }} </div> 
+				<div class="slider"><label for="">tijdstap</label> <input v-model="time_step" type="range" min="0" max="15" step="0.2"> {{ time_step }} </div> 
+				<div class="slider"><label for="">noise seed</label> <input v-model="noise_z" type="range" min="0" max="15"> {{ noise_z }} </div> 
+	
+				
+				<div class="slider">
+					<label for="">Punten </label> <input v-model="draw_type" type="radio" value="points" >
+					<label for="">Lijnen</label><input v-model="draw_type" type="radio" value="lines" >
+				</div>
+				<br/><br/>
+				<div class="slider"><label for="">Noise seed volgt muis</label> <input v-model="change_noise_z_on_mouse_move" type="checkbox"></div> 
+			</div>
+		</div>
+	
+		<script>
+
+			var field
+			var points = []
+			
+			var w
+			var h
+
+			var vue
+			vue = new Vue({
+				el: "#app",
+				data: {
+					max_points: 2500,
+					noise_step: 3,
+					fade: 128,
+					radius: 3,
+					draw_type: "points",
+					max_speed: 3,
+					time_step: 4,
+					noise_z: 0, 	
+					change_noise_z_on_mouse_move: false
+
+				},
+				watch: {
+                    max_points: function(value) {
+                        if (value < points.length) {
+                            points = points.slice(0, value)
+                        } else {
+                            for (var i = 0; i < value - points.length; i++) {
+                                var p = createVector(random(w), random(h))
+                                p.v = createVector(0, 0)
+                                
+                                points.push(p)
+                            }
+                        }
+                    }
+                }
+			})
+
+			//var noise_step = 2
+			var noise_z = 0;
+			var step = 30
+
+			var pg, fg
+
+			function setup(){
+
+				noiseSeed()
+
+				w = windowWidth
+				h = windowHeight
+
+				createCanvas(w, h)
+
+				pg = createGraphics(w, h)
+				fg = createGraphics(w, h)
+
+				for (var i = 0; i < vue.max_points; i++) {
+					var particle = createVector(round(random(windowWidth)), round(random(windowHeight)))
+					particle.v = createVector(random(2) - 1, random(2) -1 )
+					points.push(particle)
+				}
+
+				drawField()
+
+			}
+
+			function drawField() {
+
+				fg.clear()
+			
+				for (var i = 0; i < w; i+= step) {
+					
+					for (var j = 0; j < h; j+= step) {
+						var n = noise(vue.noise_step * i / w, vue.noise_step * j / h, noise_z) 
+						fg.fill(round(255 * n), round(255 * n), round(255 * n), 10)
+
+						fg.noStroke()
+						fg.rect(i, j, step, step)
+
+			
+						fg.stroke(0, 0, 0, 255, 3)
+
+						var n = noise(vue.noise_step * i / w, vue.noise_step * j / h, noise_z) * Math.PI * 4;
+						fg.line(i , j , i  + 10 * Math.cos(n), j  + 10 * Math.sin(n))
+
+					
+					}
+				}
+
+			}
+
+			function mouseMoved() {
+				if (!vue.change_noise_z_on_mouse_move) return
+				noise_z = cos(mouseX) + sin(mouseY)
+			}
+
+			function draw(){
+				// drawField()
+				//pg.clear()
+				pg.fill(255, 255, 255, Number(vue.fade))
+				pg.rect(0, 0, w, h)
+				noise_z += 0.001
+				for (var i = 0; i < points.length; i++) {
+					var p = points[i]
+					var n = noise(vue.noise_step * p.x / w, vue.noise_step * p.y / h, noise_z) * Math.PI * 4;
+					//stroke(255, 0, 0)
+					//pg.line(p.x , p.y , p.x  + 10 * Math.cos(n), p.y  + 10 * Math.sin(n))
+					p.v.x += Math.cos(n) *  vue.time_step
+					p.v.y += Math.sin(n) * vue.time_step
+
+					var r = vue.max_speed
+					var v = p.v.x * p.v.x + p.v.y * p.v.y
+
+					if (v > r * r) {
+						p.v.x *= Math.sqrt(r * r / v)
+						p.v.y *= Math.sqrt(r * r / v)
+					}
+
+					p.x += p.v.x * vue.time_step 
+					p.y += p.v.y * vue.time_step
+
+					if (abs(p.x) > w || abs(p.y) > h) {	
+						p.x = random(w);
+						p.y = random(h)
+						p.v = createVector(0, 0)
+						p.lx = p.x
+						p.ly = p.y
+					}
+
+
+
+				
+					if (vue.draw_type == "points") {
+						pg.stroke(0, 0, 0, 255)
+						pg.noStroke()
+						pg.fill(0, 0, 0, 255)
+						pg.circle(p.x, p.y, vue.radius)
+					} else {
+						pg.strokeWeight(1)
+						pg.stroke(0, 0, 0)
+						pg.noFill()
+						pg.line(p.x, p.y, p.lx, p.ly)
+						p.lx = p.x
+						p.ly = p.y
+					}
+
+
+				}
+
+				// clear()	
+				
+				//image(fg, 0, 0)
+				image(pg, 0, 0)
+
+			}
+
+
+	    </script>
+
+	</body>
+</htlm>
+
