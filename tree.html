@@ -1,0 +1,197 @@
+<html>
+	<head>
+        <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
+        <script src="p5.min.js"> </script>
+        <style>
+            html, body {
+                height: 100%;
+		    	width: 100%;
+		    	overflow: none;
+                font-family: monospace;
+            }
+
+            body {
+                margin: 0 auto;
+				width: 940px;
+            }
+		
+			/* canvas {
+				top: 0;
+				left: 0;
+				position: absolute
+			} */
+			
+			#app {
+				position: fixed;
+				z-index: 5000;
+				top: 0;
+				left: 0;
+			}
+
+            #controls  {
+				
+		    	font-family: monospace;
+	        	background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                top: 0;
+	        	left: 0;
+                padding: 20px;
+                border-radius: 4px;
+                border: 1px solid #eee;
+                margin: 20px;
+                
+            }
+
+            label {
+                padding: 4px;
+                margin: 4px;
+                vertical-align: top;
+				width: 100px;
+            }
+
+            .slider {
+                margin: 4px
+            }
+		
+	    .slider input[type=checkbox] {
+		    float: right;
+	    }
+        
+	</style>
+    
+	
+</head>
+	<body>
+		<div id="app">
+			<div id="controls" style="max-height: 10px; overflow: hidden; display: none">
+				<div class="slider"><label for="">max_points </label> 
+					<input v-model="max_points" type="range" min="0" max="5000"> {{ max_points }}
+				</div> 
+				<div class="slider"><label for="">noise resolutie </label> <input v-model="noise_step" type="range" min="0" max="50"> {{ noise_step }}</div>
+				<div class="slider"><label for="">fade </label> <input v-model="fade" type="range" min="0" max="255"> {{ fade }} </div>
+				<div class="slider"><label for="">punt dikte </label> <input v-model="radius" type="range" min="0" max="15"> {{ radius }} </div> 
+				<div class="slider"><label for="">max snelheid</label> <input v-model="max_speed" type="range" min="0" max="7"> {{ max_speed }} </div> 
+				<div class="slider"><label for="">tijdstap</label> <input v-model="time_step" type="range" min="0" max="15" step="0.2"> {{ time_step }} </div> 
+				<div class="slider"><label for="">noise seed</label> <input v-model="noise_z" type="range" min="0" max="15"> {{ noise_z }} </div> 
+	
+				
+				<div class="slider">
+					<label for="">Punten </label> <input v-model="draw_type" type="radio" value="points" >
+					<label for="">Lijnen</label><input v-model="draw_type" type="radio" value="lines" >
+				</div>
+				<br/><br/>
+				<div class="slider"><label for="">Noise seed volgt muis</label> <input v-model="change_noise_z_on_mouse_move" type="checkbox"></div> 
+			</div>
+		</div>
+		<img id ="frame" style="display: none" src="steck1.jpg"/>
+		<img id ="blokje1" style="display: none" src="blokje1.jpg"/>
+		<img id ="blokje2" style="display: none" src="blokje2.jpg"/>
+	
+		<script>
+
+			var field
+			var points = []
+			
+			var w
+			var h
+
+			var vue
+			vue = new Vue({
+				el: "#app",
+				data: {
+					max_points: 2500,
+					noise_step: 3,
+					fade: 128,
+					radius: 3,
+					draw_type: "points",
+					max_speed: 1,
+					time_step: 1,
+					noise_z: 0, 	
+					change_noise_z_on_mouse_move: false
+
+				},
+				watch: {
+                    max_points: function(value) {
+                        if (value < points.length) {
+                            points = points.slice(0, value)
+                        } else {
+                            for (var i = 0; i < value - points.length; i++) {
+                                var p = createVector(random(w), random(h))
+                                p.v = createVector(0, 0)
+                                
+                                points.push(p)
+                            }
+                        }
+                    }
+                }
+			})
+
+			function setup() {
+
+				createCanvas(800, 800)
+
+				stroke(0, 0, 0)
+				strokeWeight(3)
+
+				var initial_branch_length = 100
+				var branch_length = initial_branch_length;
+				var branches = [ { position: createVector(400, 700), rotation: random(-0.1, 0.1), length: initial_branch_length, parent_position: createVector(400, 700), step: 1 }]
+				var new_branches = [];
+				var max_steps = 9
+
+				for (var i = 0; i < max_steps; i++) {
+
+				
+					for (var j = 0; j < branches.length; j++) {
+						var branch = branches[j];
+
+
+						var end = createVector(branch.position.x + branch.length * sin(branch.rotation), branch.position.y - abs(branch.length *  cos(branch.rotation)))
+
+						stroke(0 + 20 * i)
+						strokeWeight(30 * Math.pow(0.7, branch.step));
+
+						//bezier(branch.position.x, branch.position.y, branch.parent_position.x, branch.parent_position.y, end.x + 0.05 * branch.position.x, end.y + 0.02 * branch.position.y, end.x, end.y)
+						line(branch.position.x, branch.position.y, end.x, end.y)
+						noStroke()
+						if (i < 4) {
+						//	text(branch.step + " -> " + branch.length, end.x + 10 , end.y + 10)
+						}
+
+						if (i > 5 && i < 11) {
+			
+							fill(237, 34, 93, 100)
+							circle(end.x, end.y, 13 * i / 8)
+						}
+
+						for (var k = 0; k < 2; k++) {
+							var new_branch = {
+								position: createVector(end.x, end.y),
+								rotation: branch.rotation + random (- pow( 0.9, i), pow( 0.9, i) ) * PI * 0.5,
+								length: branch_length * random(pow(0.9, i), pow( 1.1, i)),
+								parent_position: branch.position,
+								step: 2 + i
+							}
+							new_branches.push(new_branch)
+						}
+
+					}
+
+					branches = new_branches;
+					new_branches = []
+					branch_length *= 0.7;
+				}
+			}
+
+			function draw() {
+
+			}
+
+
+	    </script>
+
+	</body>
+</htlm>
+
